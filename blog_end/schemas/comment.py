@@ -4,12 +4,14 @@ from pydantic import BaseModel, Field
 
 
 class CommentCreate(BaseModel):
+    """创建评论请求模型"""
     content: str = Field(..., min_length=1, max_length=500, description="评论内容")
     article_id: int = Field(..., description="文章ID")
     parent_id: Optional[int] = Field(None, description="父评论ID（回复时填写）")
 
 
 class CommentResponse(BaseModel):
+    """评论响应模型"""
     id: int
     content: str
     article_id: int
@@ -25,8 +27,10 @@ class CommentResponse(BaseModel):
 
 
 class CommentListResponse(BaseModel):
+    """评论列表响应模型"""
     items: List[CommentResponse]
     total: int
     page: int
     size: int
     has_more: bool
+

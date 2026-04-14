@@ -19,6 +19,7 @@ redis_client = redis.Redis(
 #设置 和读取 （字符串 和 列表和字典）"[{}]"
 #读取 ：字符串
 async  def get_cache(key: str):
+    """获取缓存（字符串）"""
     try:
         return await redis_client.get(key)
     except Exception as e:
@@ -28,6 +29,7 @@ async  def get_cache(key: str):
 
 #读取：列表或字典
 async def get_json_cache(key: str):
+    """获取JSON缓存（列表或字典）"""
     try:
         data = await redis_client.get(key)
         if data:
@@ -40,7 +42,9 @@ async def get_json_cache(key: str):
 
 #设置缓存 setex（key,expire,value)
 async def set_cache(key: str, value: Any, expire: 3600):
+    """设置缓存"""
     try:
+        # 如果是字典或列表，先转换为JSON字符串
         if isinstance(value, (dict, list)):
             #转字符串中再存
             value = json.dumps(value, ensure_ascii=False)  #中文正常保存
@@ -49,3 +53,4 @@ async def set_cache(key: str, value: Any, expire: 3600):
     except Exception as e:
         print(f"设置缓存失败：{e}")
         return False
+

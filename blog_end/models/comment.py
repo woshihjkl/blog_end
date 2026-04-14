@@ -5,6 +5,7 @@ from database import Base
 
 
 class Comment(Base):
+    """评论模型"""
     __tablename__ = "comments"
 
     id: Mapped[int] = mapped_column(primary_key=True, index=True)
@@ -19,3 +20,4 @@ class Comment(Base):
     user: Mapped["User"] = relationship(back_populates="comments")
     parent: Mapped["Comment"] = relationship(remote_side=[id], back_populates="replies")
     replies: Mapped[list["Comment"]] = relationship(back_populates="parent")
+

@@ -5,6 +5,7 @@ from pydantic import BaseModel, ConfigDict, Field
 
 
 class ArticlesBase(BaseModel):
+    """文章基础模型"""
     id: int
     title: str
     description: Optional[str] =  None

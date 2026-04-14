@@ -1,11 +1,7 @@
 from datetime import datetime
 from sqlalchemy import Column, UniqueConstraint,Index , Integer,ForeignKey,DATETIME
-from sqlalchemy.orm import Mapped, mapped_column, relationship,DeclarativeBase
-from models.article import Article
-from models.users import User
-
-class Base(DeclarativeBase):
-    pass
+from sqlalchemy.orm import Mapped, mapped_column, relationship
+from database import Base
 
 class Favorite(Base):
     __tablename__ = "favorite"

@@ -6,13 +6,12 @@ from utils.exception import http_exception_handler, integrity_error_handler, sql
 
 # 注册全局异常处理器
 def register_exception_handlers(app):
-    """
-    注册异常处理函数
-    """
+    """注册异常处理函数"""
 
     # 注册全局异常处理函数
     app.add_exception_handler(HTTPException, http_exception_handler)  # 业务层
     app.add_exception_handler(IntegrityError, integrity_error_handler)  #数据完整性约束
     app.add_exception_handler(SQLAlchemyError, sqlalchemy_error_handler)  #数据库
     app.add_exception_handler(Exception, general_exception_handler)    # 其他
+
 

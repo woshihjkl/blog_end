@@ -11,11 +11,13 @@ async def get_article_by_id(db: AsyncSession, article_id: int):
 
 async def get_articles(db: AsyncSession, page: int = 1, size: int = 10):
     """获取文章列表（分页）"""
+    # 计算偏移量并查询文章列表
     offset = (page - 1) * size
     stmt = select(Article).order_by(Article.created_at.desc()).offset(offset).limit(size)
     result = await db.execute(stmt)
     items = result.scalars().all()
 
+    # 统计总数并判断是否有更多数据
     total = (await db.execute(select(func.count()).select_from(Article))).scalar_one()
     has_more = (offset + len(items)) < total
 
@@ -33,6 +35,7 @@ async def create_article(db: AsyncSession, title: str, content: str, author_id: 
 
 async def delete_article(db: AsyncSession, article_id: int):
     """删除文章"""
+    # 查询文章并删除
     article = await get_article_by_id(db, article_id)
     if article:
         await db.delete(article)
@@ -43,8 +46,10 @@ async def delete_article(db: AsyncSession, article_id: int):
 #搜索文章
 async def search_articles(db: AsyncSession, keyword: str, page: int = 1, size: int = 10):
     """搜索文章（支持标题和内容模糊查询）"""
+    # 计算偏移量
     offset = (page - 1) * size
 
+    # 构建搜索查询语句（标题或内容包含关键词）
     stmt = (
         select(Article)
         .where(
@@ -59,6 +64,7 @@ async def search_articles(db: AsyncSession, keyword: str, page: int = 1, size: i
     result = await db.execute(stmt)
     items = result.scalars().all()
 
+    # 统计搜索结果总数
     count_stmt = (
         select(func.count())
         .select_from(Article)
@@ -71,4 +77,5 @@ async def search_articles(db: AsyncSession, keyword: str, page: int = 1, size: i
     has_more = (offset + len(items)) < total
 
     return {"items": items, "total": total, "page": page, "size": size, "has_more": has_more}
+
 

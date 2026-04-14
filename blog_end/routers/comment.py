@@ -19,6 +19,7 @@ async def create_comment(
         db: AsyncSession = Depends(get_database)
 ):
     """发表评论或回复"""
+    # 创建评论或回复
     new_comment = await comment_crud.create_comment(
         db=db,
         content=data.content,
@@ -27,6 +28,7 @@ async def create_comment(
         parent_id=data.parent_id
     )
 
+    # 构造响应数据
     response_data = CommentResponse.model_validate(new_comment)
     return success_response(message="评论成功", data=response_data)
 
@@ -39,6 +41,7 @@ async def get_article_comments(
         db: AsyncSession = Depends(get_database)
 ):
     """获取文章评论列表"""
+    # 获取文章的顶级评论列表
     result = await comment_crud.get_article_comments(
         db=db,
         article_id=article_id,
@@ -46,6 +49,7 @@ async def get_article_comments(
         size=size
     )
 
+    # 为每条评论获取其回复
     comments_with_replies = []
     for comment in result["items"]:
         comment_dict = CommentResponse.model_validate(comment).model_dump()
@@ -53,6 +57,7 @@ async def get_article_comments(
         comment_dict["replies"] = [CommentResponse.model_validate(r).model_dump() for r in replies]
         comments_with_replies.append(comment_dict)
 
+    # 构造响应数据
     response_data = CommentListResponse(
         items=comments_with_replies,
         total=result["total"],
@@ -71,6 +76,7 @@ async def delete_comment(
         db: AsyncSession = Depends(get_database)
 ):
     """删除评论"""
+    # 删除评论（仅作者可删）
     deleted = await comment_crud.delete_comment(
         db=db,
         comment_id=comment_id,
@@ -84,3 +90,4 @@ async def delete_comment(
         )
 
     return success_response(message="删除评论成功")
+

@@ -10,9 +10,8 @@ DEBUG_MODE = True  #开始调试
 
 #业务层面
 async  def http_exception_handler(request: Request, exc: HTTPException):
-    """
-    HTTP异常处理
-    """
+    """HTTP异常处理"""
+    # 处理业务层HTTP异常
     return JSONResponse(
         status_code=exc.status_code,
         content={
@@ -24,11 +23,11 @@ async  def http_exception_handler(request: Request, exc: HTTPException):
 
 #数据库完整性约束
 async def integrity_error_handler(request: Request, exc: IntegrityError):
-    """
-    数据库异常处理
-    """
+    """数据库异常处理"""
+    # 解析数据库错误信息
     error_msg = str(exc.orig)
 
+    # 根据错误类型返回友好提示
     if "username_UNIQUE" in error_msg or "Duplicate entry" in error_msg :
         detail = "用户名已存在"
     elif "FOREIGN KEY" in error_msg:
@@ -57,9 +56,7 @@ async def integrity_error_handler(request: Request, exc: IntegrityError):
 
 #处理SQLALchemy 数据库错误
 async def sqlalchemy_error_handler(request: Request, exc: SQLAlchemyError):
-    """
-    数据库异常处理
-    """
+    """数据库异常处理"""
     #开发模式下返回详细错误信息
     error_data =  None
     if DEBUG_MODE:
@@ -82,9 +79,7 @@ async def sqlalchemy_error_handler(request: Request, exc: SQLAlchemyError):
 
 
 async  def general_exception_handler(request: Request, exc: Exception):
-    """
-    其他异常处理
-    """
+    """其他异常处理"""
     #开发模式下返回详细错误信息
     error_data = None
     if DEBUG_MODE:
@@ -103,3 +98,4 @@ async  def general_exception_handler(request: Request, exc: Exception):
             "data": error_data
         }
     )
+

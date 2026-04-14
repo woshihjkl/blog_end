@@ -4,6 +4,8 @@ from typing import Optional
 from config.config import SECRET_KEY, ALGORITHM, ACCESS_TOKEN_EXPIRE_MINUTES
 
 def create_access_token(data: dict) -> str:
+    """创建JWT访问令牌"""
+    # 复制数据并添加过期时间
     to_encode = data.copy()
     expire = datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     to_encode.update({"exp": expire})
@@ -12,8 +14,6 @@ def create_access_token(data: dict) -> str:
     return encoded_jwt
 
 def decode_access_token(token: str) -> dict:
-    """
-    解码 JWT token，如果无效则抛出 JWTError
-    """
+    """解码JWT token，如果无效则抛出JWTError"""
     payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
     return payload

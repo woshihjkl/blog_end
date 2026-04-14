@@ -1,3 +1,3 @@
-from . import article, users
+from . import article, users, comment, favorite
 
-__all__ = ["article", "users"]
+__all__ = ["article", "users", "comment", "favorite"]

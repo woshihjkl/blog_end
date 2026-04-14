@@ -2,12 +2,13 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 import models
 import database
-from routers import users, articles,favorite,comment
+from routers import users, articles, favorite, comment, auth
 from utils.exception_handlers import register_exception_handlers
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    """应用生命周期管理"""
     # 启动时初始化数据库
     await database.init_db()
     yield
@@ -26,10 +27,13 @@ app.include_router(articles.router)
 app.include_router(favorite.router)
 app.include_router(comment.router)
 
+
 @app.get("/")
 async def root():
+    """根路径"""
     return {"message": "Hello, FastAPI with Async SQLAlchemy"}
 
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run("main:app", host="127.0.0.1", port=8000, reload=True)
+

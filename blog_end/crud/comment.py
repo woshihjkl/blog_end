@@ -6,6 +6,7 @@ from models.users import User
 
 async def create_comment(db: AsyncSession, content: str, article_id: int, user_id: int, parent_id: int = None):
     """创建评论"""
+    # 创建新评论或回复
     new_comment = Comment(
         content=content,
         article_id=article_id,
@@ -20,6 +21,7 @@ async def create_comment(db: AsyncSession, content: str, article_id: int, user_i
 
 async def get_article_comments(db: AsyncSession, article_id: int, page: int = 1, size: int = 10):
     """获取文章评论列表（仅顶级评论）"""
+    # 计算偏移量并查询顶级评论
     offset = (page - 1) * size
 
     stmt = (
@@ -33,6 +35,7 @@ async def get_article_comments(db: AsyncSession, article_id: int, page: int = 1,
     result = await db.execute(stmt)
     items = result.scalars().all()
 
+    # 统计顶级评论总数
     count_stmt = (
         select(func.count())
         .select_from(Comment)
@@ -46,6 +49,7 @@ async def get_article_comments(db: AsyncSession, article_id: int, page: int = 1,
 
 async def get_comment_replies(db: AsyncSession, parent_id: int):
     """获取评论的回复列表"""
+    # 查询指定父评论的所有回复
     stmt = (
         select(Comment)
         .where(Comment.parent_id == parent_id)
@@ -57,11 +61,14 @@ async def get_comment_replies(db: AsyncSession, parent_id: int):
 
 async def delete_comment(db: AsyncSession, comment_id: int, user_id: int):
     """删除评论（仅作者可删）"""
+    # 查询评论并验证作者权限
     stmt = select(Comment).where(Comment.id == comment_id, Comment.user_id == user_id)
     result = await db.execute(stmt)
     comment = result.scalar_one_or_none()
 
+    # 如果评论存在且属于当前用户则删除
     if comment:
         await db.delete(comment)
         await db.commit()
     return comment
+

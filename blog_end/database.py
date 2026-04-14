@@ -45,3 +45,4 @@ async def init_db():
 async def close_db():
     """关闭数据库引擎"""
     await async_engine.dispose()
+

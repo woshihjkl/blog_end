@@ -7,6 +7,7 @@ from database import Base
 
 
 class User(Base):
+    """用户模型"""
     __tablename__ = "users"
 
     # 索引
@@ -20,13 +21,16 @@ class User(Base):
     password: Mapped[str] = mapped_column(String(100), nullable=False)
     create_time: Mapped[datetime] = mapped_column(server_default=func.now(), nullable=False)
     phone: Mapped[str] = mapped_column(String(20), unique=True, nullable=True, index=True)
+    nickname: Mapped[Optional[str]] = mapped_column(String(50), nullable=True, default=None, comment="昵称")
     bio: Mapped[Optional[str]] = mapped_column(Text, nullable=True, default=None, comment="用户简介")
     avatar: Mapped[Optional[str]] = mapped_column(String(255), nullable=True, default=None, comment="用户头像")
+    gender: Mapped[Optional[int]] = mapped_column(Integer, nullable=True, default=None, comment="性别")
     articles: Mapped[list["Article"]] = relationship(back_populates="author")
     comments: Mapped[list["Comment"]] = relationship(back_populates="user")
 
 
 class UserToken(Base):
+    """用户令牌模型"""
     __tablename__ = "user_tokens"
 
 

@@ -26,6 +26,7 @@ async def set_cache_articles_list(
         articles_list:List[Dict[str,Any]],
         expire : int = 1800
 ):
+    """设置文章列表缓存"""
     #调用 封装的 Redis 的设置方法，存文章列表到缓存
     category_part = category_id if category_id is not None else "all"
     key = f"{ARTICLES_LIST_PREFIX}{category_part}:{page}:{page_size}"
@@ -38,6 +39,9 @@ async def get_cache_articles_list(
         page:int,
         page_size:int
 ):
+    """获取文章列表缓存"""
+    # 构造缓存键并查询
     category_part = category_id if category_id is not None else "all"
     key = f"{ARTICLES_LIST_PREFIX}{category_part}:{page}:{page_size}"
     return await get_json_cache(key)
+

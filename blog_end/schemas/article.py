@@ -4,16 +4,19 @@ from typing import List
 
 
 class ArticleCreate(BaseModel):
+    """创建文章请求模型"""
     title: str
     content: str
 
 
 class ArticleUpdate(BaseModel):
+    """更新文章请求模型"""
     title: str | None = None
     content: str | None = None
 
 
 class ArticleResponse(BaseModel):
+    """文章响应模型"""
     id: int
     title: str
     content: str
@@ -25,6 +28,7 @@ class ArticleResponse(BaseModel):
 
 
 class ArticleListResponse(BaseModel):
+    """文章列表响应模型"""
     items: List[ArticleResponse]
     total: int
     page: int
@@ -32,3 +36,4 @@ class ArticleListResponse(BaseModel):
     has_more: bool
 
     model_config = ConfigDict(from_attributes=True)
+

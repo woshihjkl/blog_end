@@ -11,6 +11,8 @@ async def is_articles_favorite(
         user_id: int,
         article_id: int
 ):
+    """检查文章是否被用户收藏"""
+    # 查询收藏记录是否存在
     query = select(Favorite).where(Favorite.user_id == user_id,Favorite.article_id == article_id)
     result = await db.execute(query)
     #是否有收藏，返回布尔值
@@ -23,6 +25,7 @@ async def add_articles_favorite(
         article_id: int
 ):
     """添加收藏"""
+    # 创建新的收藏记录
     new_favorite = Favorite(user_id=user_id, article_id=article_id)
     db.add(new_favorite)
     await db.commit()
@@ -36,6 +39,7 @@ async def delete_articles_favorite(
         article_id: int
 ):
     """取消收藏"""
+    # 删除指定的收藏记录
     query = delete(Favorite).where(Favorite.user_id == user_id, Favorite.article_id == article_id)
     result = await db.execute(query)
     await db.commit()
@@ -49,6 +53,7 @@ async def get_favorites_list(
         page_size: int = 10
 ):
     """获取用户收藏列表"""
+    # 统计收藏总数
     query = select(func.count()).where(Favorite.user_id == user_id)
     # query = query.offset((page - 1) * page_size).limit(page_size)
     count_result = await db.execute(query)
@@ -79,9 +84,11 @@ async def remove_all_favorites(
         user_id: int
 ):
     """删除所有收藏"""
+    # 删除用户的所有收藏记录
     query = delete(Favorite).where(Favorite.user_id == user_id)
     result = await db.execute(query)
     await db.commit()
     return result.rowcount or 0
+
 
 

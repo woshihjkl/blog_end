@@ -6,9 +6,12 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 #密码加密
 def get_hash_password(password: str):
+    """密码加密"""
     return pwd_context.hash(password)
 
 
 #验证密码 ：verify 返回值是布尔
 def verify_password(plain_password: str, hashed_password):
+    """验证密码"""
     return pwd_context.verify(plain_password, hashed_password)
+
